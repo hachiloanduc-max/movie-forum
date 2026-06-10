@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>影谈 CineTalk — 发现好电影·分享热评</title>
+<style>
+:root {
+  --bg: #0a0a0a;
+  --bg2: #121212;
+  --card: #1a1a1a;
+  --card-hover: #222;
+  --gold: #f5c518;
+  --red: #e50914;
+  --text: #e8e8e8;
+  --text2: #aaa;
+  --text3: #666;
+  --border: #252525;
+  --radius: 14px;
+  --shadow: 0 8px 32px rgba(0,0,0,.6);
+  --transition: .3s cubic-bezier(.4,0,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+
+/* HEADER */
+.header{position:sticky;top:0;z-index:100;background:rgba(10,10,10,.85);backdrop-filter:blur(24px) saturate(1.5);border-bottom:1px solid var(--border)}
+.header-inner{max-width:1480px;margin:0 auto;display:flex;align-items:center;gap:28px;padding:0 36px;height:68px}
+.logo{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;text-decoration:none;color:#fff;letter-spacing:-.5px}
+.logo .icon{width:36px;height:36px;background:linear-gradient(135deg,var(--red),#ff6b35);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.nav{display:flex;gap:4px}
+.nav a{color:var(--text2);text-decoration:none;padding:8px 18px;border-radius:22px;font-size:14px;font-weight:500;transition:var(--transition)}
+.nav a:hover,.nav a.active{color:#fff;background:rgba(255,255,255,.08)}
+.header-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+.search-wrap{position:relative}
+.search-wrap input{background:var(--card);border:1px solid var(--border);color:var(--text);padding:10px 18px 10px 40px;border-radius:24px;width:240px;font-size:14px;outline:none;transition:var(--transition)}
+.search-wrap input:focus{border-color:var(--gold);width:300px;box-shadow:0 0 0 3px rgba(245,197,24,.1)}
+.search-wrap input::placeholder{color:var(--text3)}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px}
+.btn-sign{background:var(--red);color:#fff;border:none;padding:10px 22px;border-radius:22px;font-size:14px;font-weight:600;cursor:pointer;transition:var(--transition)}
+.btn-sign:hover{background:#ff1a25;transform:translateY(-1px);box-shadow:0 4px 16px rgba(229,9,20,.3)}
+
+/* HERO */
+.hero{position:relative;height:420px;overflow:hidden;margin:0 36px 36px;border-radius:20px;display:flex;align-items:flex-end}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#1a0a0a 0%,#0a0a1a 30%,#0a1a0a 70%,#1a1a0a 100%);z-index:0}
+.hero-bg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(229,9,20,.15),transparent 60%),radial-gradient(ellipse at 30% 30%,rgba(245,197,24,.08),transparent 50%)}
+.hero-content{position:relative;z-index:1;padding:48px;display:flex;align-items:flex-end;gap:32px;width:100%}
+.hero-poster-wrap{flex-shrink:0;width:200px;border-radius:14px;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.5);position:relative}
+.hero-poster-wrap img{width:100%;display:block}
+.hero-poster-wrap .poster-fallback{width:100%;aspect-ratio:2/3;background:linear-gradient(135deg,#2a1a3a,#1a2a3a);display:flex;align-items:center;justify-content:center;font-size:64px}
+.hero-info{flex:1;min-width:0}
+.hero-label{display:inline-block;background:var(--red);color:#fff;padding:4px 14px;border-radius:12px;font-size:12px;font-weight:700;margin-bottom:16px;letter-spacing:1px;text-transform:uppercase}
+.hero-title{font-size:48px;font-weight:900;margin-bottom:6px;letter-spacing:-1px;line-height:1.1}
+.hero-sub{font-size:17px;color:var(--text2);margin-bottom:20px}
+.hero-meta{display:flex;gap:16px;align-items:center;margin-bottom:20px}
+.hero-rating{display:flex;align-items:center;gap:10px}
+.hero-rating .score{font-size:42px;font-weight:900;color:var(--gold)}
+.hero-rating .stars{color:var(--gold);font-size:20px}
+.hero-rating .count{color:var(--text3);font-size:13px}
+.hero-genres{display:flex;gap:8px}
+.hero-genres span{padding:6px 14px;background:rgba(255,255,255,.08);border-radius:12px;font-size:13px;border:1px solid var(--border)}
+.hero-desc{font-size:14px;color:var(--text2);line-height:1.7;max-width:600px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.hero-actions{display:flex;gap:12px;margin-top:20px}
+.hero-actions button{padding:12px 28px;border-radius:24px;font-size:15px;font-weight:600;cursor:pointer;transition:var(--transition);border:none}
+.btn-primary{background:var(--red);color:#fff}
+.btn-primary:hover{background:#ff1a25;transform:translateY(-2px);box-shadow:0 6px 20px rgba(229,9,20,.3)}
+.btn-secondary{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--border)!important}
+.btn-secondary:hover{background:rgba(255,255,255,.14)}
+
+/* MAIN */
+.main-wrap{max-width:1480px;margin:0 auto;padding:0 36px;display:flex;gap:28px}
+.content{flex:1;min-width:0}
+.sidebar{width:300px;flex-shrink:0}
+
+/* SECTION */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.section-header h2{font-size:22px;font-weight:700;display:flex;align-items:center;gap:10px}
+.section-header h2 .dot{width:8px;height:8px;background:var(--red);border-radius:50%}
+.section-header .more{color:var(--text3);text-decoration:none;font-size:13px;transition:var(--transition)}
+.section-header .more:hover{color:var(--gold)}
+.filters{display:flex;gap:8px;margin-bottom:24px}
+.filter-btn{padding:8px 18px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;transition:var(--transition)}
+.filter-btn:hover,.filter-btn.active{background:var(--red);color:#fff;border-color:var(--red)}
+
+/* MOVIE GRID */
+.movie-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:40px}
+.movie-card{background:var(--card);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:var(--transition);border:1px solid transparent;position:relative}
+.movie-card:hover{transform:translateY(-8px);box-shadow:var(--shadow);border-color:var(--border);background:var(--card-hover)}
+.movie-card .rank{position:absolute;top:12px;left:12px;z-index:2;width:28px;height:28px;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--gold)}
+.movie-poster{width:100%;aspect-ratio:2/3;overflow:hidden;position:relative;background:var(--bg2)}
+.movie-poster img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.movie-card:hover .movie-poster img{transform:scale(1.08)}
+.movie-poster .fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:52px;background:linear-gradient(135deg,#1a1a2e,#16213e)}
+.movie-body{padding:16px}
+.movie-body .title{font-size:15px;font-weight:700;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.movie-body .meta{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text2)}
+.movie-body .meta .rating{color:var(--gold);font-weight:700;font-size:13px}
+.movie-body .meta .year{color:var(--text3)}
+.movie-body .meta .genre-tag{padding:2px 8px;background:rgba(255,255,255,.06);border-radius:8px;font-size:11px;border:1px solid var(--border)}
+.movie-body .brief{font-size:12px;color:var(--text3);margin-top:8px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* SIDEBAR */
+.sb-card{background:var(--card);border-radius:var(--radius);padding:22px;margin-bottom:20px;border:1px solid var(--border)}
+.sb-card h3{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.sb-card h3 .emoji{font-size:18px}
+.disc-item{padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:var(--transition)}
+.disc-item:last-child{border-bottom:none}
+.disc-item:hover .disc-title{color:var(--gold)}
+.disc-item .disc-title{font-size:13px;font-weight:600;margin-bottom:6px;transition:color .2s}
+.disc-item .disc-meta{font-size:11px;color:var(--text3);display:flex;gap:10px}
+.disc-item .disc-tag{display:inline-block;padding:2px 8px;background:rgba(229,9,20,.15);color:var(--red);border-radius:6px;font-size:10px;font-weight:600;margin-top:6px}
+.rank-list{counter-reset:rank;list-style:none}
+.rank-list li{counter-increment:rank;display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;cursor:pointer;transition:var(--transition)}
+.rank-list li:last-child{border-bottom:none}
+.rank-list li:hover{color:var(--gold)}
+.rank-list li::before{content:counter(rank);width:24px;height:24px;background:var(--bg2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.rank-list li:nth-child(1)::before{background:var(--gold);color:#000}
+.rank-list li:nth-child(2)::before{background:#c0c0c0;color:#000}
+.rank-list li:nth-child(3)::before{background:#cd7f32;color:#000}
+
+/* FEATURED REVIEW */
+.featured-review{padding:28px;background:linear-gradient(135deg,var(--card),#1a1520);border-radius:var(--radius);margin-bottom:40px;border:1px solid var(--border);position:relative;overflow:hidden}
+.featured-review::before{content:'\201C';position:absolute;top:-10px;left:20px;font-size:120px;color:rgba(255,255,255,.02);font-family:Georgia,serif;line-height:1}
+.featured-review .review-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;position:relative}
+.featured-review .avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.featured-review .reviewer{font-weight:700;font-size:15px}
+.featured-review .reviewer-sub{font-size:12px;color:var(--text3)}
+.featured-review .review-text{font-size:15px;line-height:1.8;color:var(--text2);margin-bottom:16px;position:relative}
+.featured-review .review-footer{display:flex;gap:20px;font-size:13px;color:var(--text3)}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);justify-content:center;align-items:center;padding:20px}
+.modal-overlay.active{display:flex}
+.modal{background:var(--bg2);border-radius:20px;width:100%;max-width:820px;max-height:90vh;overflow-y:auto;position:relative;border:1px solid var(--border)}
+.modal-close{position:sticky;top:16px;float:right;z-index:10;width:40px;height:40px;background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:50%;cursor:pointer;font-size:18px;transition:var(--transition);margin-right:16px}
+.modal-close:hover{background:var(--red)}
+.modal-inner{padding:32px}
+.modal-grid{display:flex;gap:28px}
+.modal-poster-wrap{width:220px;flex-shrink:0;border-radius:14px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.modal-poster-wrap img{width:100%;display:block}
+.modal-poster-wrap .poster-fallback{aspect-ratio:2/3;background:linear-gradient(135deg,#2a1a3a,#1a2a3a);display:flex;align-items:center;justify-content:center;font-size:64px}
+.modal-detail{flex:1}
+.modal-detail h2{font-size:30px;font-weight:900;margin-bottom:4px}
+.modal-detail .en-title{font-size:15px;color:var(--text3);margin-bottom:16px}
+.modal-detail .info-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.modal-detail .info-tags span{padding:6px 14px;background:rgba(255,255,255,.06);border-radius:12px;font-size:13px;border:1px solid var(--border)}
+.modal-rating{display:flex;align-items:center;gap:16px;margin-bottom:20px;padding:20px;background:var(--card);border-radius:14px}
+.modal-rating .big-score{font-size:48px;font-weight:900;color:var(--gold);line-height:1}
+.modal-rating .rating-info{font-size:13px;color:var(--text2)}
+.modal-rating .rating-info strong{display:block;font-size:15px;color:var(--text);margin-bottom:2px}
+.modal-detail .synopsis{font-size:14px;line-height:1.9;color:var(--text2);margin-bottom:20px}
+.modal-comments{margin-top:24px;border-top:1px solid var(--border);padding-top:24px}
+.modal-comments h3{font-size:17px;margin-bottom:16px}
+.comment-input{display:flex;gap:10px;margin-bottom:16px}
+.comment-input input{flex:1;background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 18px;border-radius:24px;font-size:14px;outline:none;transition:var(--transition)}
+.comment-input input:focus{border-color:var(--gold)}
+.comment-input button{background:var(--red);color:#fff;border:none;padding:12px 22px;border-radius:24px;font-size:14px;font-weight:600;cursor:pointer;transition:var(--transition)}
+.comment-input button:hover{background:#ff1a25}
+.comment-item{padding:14px 0;border-bottom:1px solid var(--border)}
+.comment-item:last-child{border-bottom:none}
+.comment-item .c-user{font-weight:600;font-size:14px;margin-bottom:4px}
+.comment-item .c-text{font-size:13px;color:var(--text2);line-height:1.6}
+.comment-item .c-time{font-size:11px;color:var(--text3);margin-top:4px}
+
+/* FOOTER */
+.footer{text-align:center;padding:32px;border-top:1px solid var(--border);color:var(--text3);font-size:12px;margin-top:40px}
+
+@media(max-width:1200px){.movie-grid{grid-template-columns:repeat(3,1fr)}.sidebar{display:none}}
+@media(max-width:768px){.movie-grid{grid-template-columns:repeat(2,1fr)}.hero{height:auto}.hero-content{flex-direction:column;align-items:center;text-align:center}.hero-poster-wrap{width:140px}.hero-title{font-size:28px}.main-wrap{padding:0 16px}.header-inner{padding:0 16px}.search-wrap input{width:140px}.search-wrap input:focus{width:180px}}
+</style>
+</head>
+<body>
+
+<header class="header">
+<div class="header-inner">
+  <a href="#" class="logo"><span class="icon">🎬</span>影谈 CineTalk</a>
+  <nav class="nav">
+    <a href="#" class="active">首页</a>
+    <a href="#">热映</a>
+    <a href="#">排行榜</a>
+    <a href="#">讨论区</a>
+    <a href="#">片单</a>
+  </nav>
+  <div class="header-right">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="搜索电影、导演、演员…">
+    </div>
+    <button class="btn-sign">登录</button>
+  </div>
+</div>
+</header>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content" id="heroContent"></div>
+</section>
+
+<div class="main-wrap">
+  <div class="content">
+    <div class="section-header">
+      <h2><span class="dot"></span>正在热映</h2>
+      <div class="filters" id="filters"></div>
+    </div>
+    <div class="movie-grid" id="movieGrid"></div>
+
+    <div class="featured-review" id="featuredReview"></div>
+
+    <div class="section-header">
+      <h2><span class="dot"></span>热门讨论</h2>
+      <a href="#" class="more">浏览全部 →</a>
+    </div>
+    <div id="discussionList" style="margin-bottom:40px"></div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sb-card">
+      <h3><span class="emoji">🏆</span>豆瓣 Top 10</h3>
+      <ol class="rank-list" id="topRank"></ol>
+    </div>
+    <div class="sb-card">
+      <h3><span class="emoji">💬</span>最新讨论</h3>
+      <div id="sideDiscussions"></div>
+    </div>
+  </aside>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div class="modal-inner" id="modalInner"></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>© 2026 影谈 CineTalk · 电影数据来源：豆瓣 / TMDB · 演示项目</p>
+</footer>
+
+<script>
+// ========= 真实电影数据 =========
+const movies = [
+  {id:1,title:"肖申克的救赎",en:"The Shawshank Redemption",year:1994,director:"弗兰克·德拉邦特",genres:"剧情 / 犯罪",rating:9.7,votes:"308万",poster:"https://image.tmdb.org/t/p/w500/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg",desc:"银行家安迪·杜佛兰因被误判谋杀妻子及其情人，被判无期徒刑，关进了肖申克监狱。在监狱中，他与囚犯瑞德成为挚友，凭借才智和毅力，用一柄小锤凿了20年墙壁，最终逃出生天。这部电影关于希望、自由和友谊，是全球影迷心中无法超越的经典。",cast:"蒂姆·罗宾斯 / 摩根·弗里曼"},
+  {id:2,title:"星际穿越",en:"Interstellar",year:2014,director:"克里斯托弗·诺兰",genres:"科幻 / 冒险 / 剧情",rating:9.4,votes:"197万",poster:"https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",desc:"近未来的地球黄沙遍野，农作物相继枯萎灭绝。前NASA宇航员库珀被选中，穿越虫洞前往遥远的星系寻找人类的新家园。在五维时空的尽头，爱成为了穿越维度的唯一密码。诺兰的科幻史诗，科学与情感完美交织。",cast:"马修·麦康纳 / 安妮·海瑟薇 / 杰西卡·查斯坦"},
+  {id:3,title:"千与千寻",en:"Spirited Away",year:2001,director:"宫崎骏",genres:"动画 / 奇幻 / 冒险",rating:9.4,votes:"238万",poster:"https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg",desc:"10岁的少女千寻随父母搬家途中，误入一个神灵世界。父母因贪吃变成了猪，千寻必须在汤婆婆的浴场工作，才能拯救他们。白龙、无脸男、锅炉爷爷……在这场奇幻旅程中，千寻学会了勇敢和善良。宫崎骏的巅峰之作。",cast:"柊瑠美 / 入野自由 / 夏木真理"},
+  {id:4,title:"盗梦空间",en:"Inception",year:2010,director:"克里斯托弗·诺兰",genres:"科幻 / 悬疑 / 动作",rating:9.4,votes:"222万",poster:"https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg",desc:"柯布是一名"盗梦者"，能够在人们梦境中窃取秘密。为了回到孩子身边，他接下了一个不可能的任务：不是偷走一个想法，而是在目标潜意识中植入一个想法。多层梦境嵌套，虚实之间令人窒息——陀螺到底停了吗？",cast:"莱昂纳多 / 渡边谦 / 约瑟夫·高登-莱维特"},
+  {id:5,title:"阿甘正传",en:"Forrest Gump",year:1994,director:"罗伯特·泽米吉斯",genres:"剧情 / 爱情 / 喜剧",rating:9.5,votes:"225万",poster:"https://image.tmdb.org/t/p/w500/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg",desc:"阿甘智商只有75，但他凭借一颗纯洁的心和永不放弃的奔跑，见证并参与了一个又一个美国历史时刻。从橄榄球明星到越战英雄，从乒乓外交到捕虾大亨。人生就像一盒巧克力，你永远不知道下一颗是什么味道。",cast:"汤姆·汉克斯 / 罗宾·怀特"},
+  {id:6,title:"泰坦尼克号",en:"Titanic",year:1997,director:"詹姆斯·卡梅隆",genres:"剧情 / 爱情 / 灾难",rating:9.5,votes:"218万",poster:"https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg",desc:"1912年，泰坦尼克号首航。穷画家杰克与富家女露丝在船上相遇，跨越阶层的爱情在最豪华的邮轮上绽放。然而，巨轮撞上冰山，1500余人葬身冰冷的大西洋。You jump, I jump. 一个时代的爱情绝唱。",cast:"莱昂纳多 / 凯特·温丝莱特"},
+  {id:7,title:"楚门的世界",en:"The Truman Show",year:1998,director:"彼得·威尔",genres:"剧情 / 科幻 / 喜剧",rating:9.3,votes:"180万",poster:"https://image.tmdb.org/t/p/w500/vuza0WqY239yBXOadKlGwJsLjtA.jpg",desc:"楚门从出生起就生活在一个巨大的摄影棚——桃源岛。他的家人、朋友、同事全是演员，他生活中的每一秒都被全球直播。当楚门开始怀疑这个世界，他决定不顾一切逃往真实。如果再也不能见到你，祝你早安、午安、晚安。",cast:"金·凯瑞 / 劳拉·琳妮"},
+  {id:8,title:"蝙蝠侠：黑暗骑士",en:"The Dark Knight",year:2008,director:"克里斯托弗·诺兰",genres:"动作 / 犯罪 / 剧情",rating:9.2,votes:"113万",poster:"https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911B6lo4k7I7dXj.jpg",desc:"蝙蝠侠、戈登警长与检察官哈维·丹特联手打击哥谭市犯罪。然而，一个名叫小丑的犯罪天才出现了，他不为金钱和权力，只想制造混乱。希斯·莱杰的小丑成为影史最伟大的反派之一。Why so serious?",cast:"克里斯蒂安·贝尔 / 希斯·莱杰 / 艾伦·艾克哈特"},
+  {id:9,title:"黑客帝国",en:"The Matrix",year:1999,director:"沃卓斯基姐妹",genres:"动作 / 科幻",rating:9.1,votes:"89万",poster:"https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",desc:"程序员尼奥发现，看似平常的现实世界其实是一个由人工智能创造的虚拟程序——矩阵。选择红色药丸还是蓝色药丸？子弹时间、功夫格斗、哲学思考，彻底改变了科幻电影的面貌。",cast:"基努·里维斯 / 劳伦斯·菲什伯恩 / 凯瑞-安·莫斯"},
+  {id:10,title:"这个杀手不太冷",en:"Léon: The Professional",year:1994,director:"吕克·贝松",genres:"剧情 / 动作 / 犯罪",rating:9.4,votes:"246万",poster:"https://image.tmdb.org/t/p/w500/bI6L4bmyLCbG9zYKJPPBsC4AGhm.jpg",desc:"职业杀手莱昂独来独往，直到邻居家12岁的女孩玛蒂尔达全家被黑警杀害，她敲响了莱昂的门。两人之间产生了超越年龄的羁绊和温情。一盆绿植、一杯牛奶，这个杀手不太冷。",cast:"让·雷诺 / 娜塔莉·波特曼 / 加里·奥德曼"},
+  {id:11,title:"疯狂动物城",en:"Zootopia",year:2016,director:"拜伦·霍华德 / 里奇·摩尔",genres:"动画 / 冒险 / 喜剧",rating:9.2,votes:"200万",poster:"https://image.tmdb.org/t/p/w500/hlK0e0wAQdGRoKEGz59gMhA6pOX.jpg",desc:"在一个哺乳动物和平共处的现代化城市，兔子朱迪成为第一位兔子警官。为证明自己，她与狡猾的狐狸尼克搭档，破获一桩神秘失踪案。一个关于偏见、梦想与友情的动人故事。",cast:"金妮弗·古德温 / 杰森·贝特曼"},
+  {id:12,title:"龙猫",en:"My Neighbor Totoro",year:1988,director:"宫崎骏",genres:"动画 / 奇幻 / 家庭",rating:9.2,votes:"134万",poster:"https://image.tmdb.org/t/p/w500/rtGDOeGDaKFs5F7t4Y2g5LnK9w4.jpg",desc:"小月和小梅随父亲搬到乡下，在森林里遇到了只有纯真孩子才能看见的精灵——龙猫。龙猫带着她们在月光下飞翔，在树顶眺望远方。宫崎骏最温暖的作品，每个人都想拥有一只龙猫。",cast:"日高法子 / 坂本千夏"}
+];
+
+const discussions = [
+  {id:1,title:"星际穿越最后那个五维空间到底是怎么回事？刷了五遍终于理清了",user:"时空旅人",avatar:"🔭",tag:"深度解读",replies:128,likes:356,time:"2小时前",excerpt:"重看第5遍，终于理清了时间线的逻辑。库珀进入的其实是未来人类建造的五维超立方体，在这里时间是物理维度，他可以像翻书一样浏览墨菲卧室的每个时间切片。最关键的是——并不是他们选择了墨菲，而是爱这种引力穿越了维度…"},
+  {id:2,title:"肖申克的救赎为什么能霸榜27年？聊聊它背后的精神力量",user:"影史观察员",avatar:"📚",tag:"影史经典",replies:256,likes:892,time:"5小时前",excerpt:"今天来聊聊这部电影为何具有超越时代的魅力。安迪在监狱中播放莫扎特《费加罗的婚礼》那一刻，所有囚犯抬头仰望天空——这就是自由的力量。不是身体上的自由，而是精神上不可被剥夺的自由…"},
+  {id:3,title:"诺兰全集Ranking：从记忆碎片到奥本海默，哪部是你的TOP1？",user:"诺兰铁粉",avatar:"🦇",tag:"投票",replies:189,likes:467,time:"8小时前",excerpt:"诺兰无疑是当代最具影响力的导演之一。从2000年的《记忆碎片》非线性叙事惊艳出道，到《蝙蝠侠》三部曲重新定义超英电影，再到《奥本海默》横扫奥斯卡。以下是我的个人排名，欢迎来战…"},
+  {id:4,title:"有没有哪部电影让你哭到停不下来？我先提名忠犬八公",user:"爱哭的影迷",avatar:"😭",tag:"推荐",replies:445,likes:1200,time:"1天前",excerpt:"昨晚又刷了一遍《忠犬八公的故事》，真的哭到脱水…八公每天去车站等已经去世的主人，一等就是十年。不仅仅是因为狗狗的忠诚，更因为那种执着的等待让人心碎。你们有没有这样一部电影？"},
+  {id:5,title:"重温宫崎骏：成年人才能看懂的隐喻与温柔",user:"动画猎人",avatar:"🌸",tag:"影评",replies:312,likes:1024,time:"1天前",excerpt:"小时候看《千与千寻》只觉得画面很美，长大了再看，才发现每一个角色都是隐喻。无脸男是消费主义吞噬下迷失的现代人，汤婆婆是资本的化身，而千寻的名字被夺走，隐喻着在现代社会中保持本真的艰难…"}
+];
+
+const reviews = [
+  {user:"影评人李大米",avatar:"🎯",sub:"知名影评博主 · 12万粉丝",text:"《星际穿越》是我看过最具野心的科幻电影。它不仅仅是关于黑洞和相对论，更是关于父女之间穿越时空的爱。当库珀在五维空间中看着过去的自己离开女儿，拼命喊出"STAY"的那一刻，我的眼泪止不住地流。诺兰用最硬的科幻，包裹了最柔软的亲情。满分。",likes:2340,comments:567},
+  {user:"小众电影挖掘机",avatar:"🎬",sub:"电影学在读 · 已看3218部",text:"说实话，我已经很久没有被一部电影如此震撼了。最近重温《楚门的世界》，发现它放在今天来看更具现实意义——我们每个人何尝不是生活在算法编织的信息茧房里？楚门最后对着天空鞠躬时的微笑，是献给所有勇敢追求真相的人的。",likes:1823,comments:412}
+];
+
+// ========= 渲染 =========
+function heroBanner(){
+  const m = movies[1]; // 星际穿越作为hero
+  const hc = document.getElementById('heroContent');
+  hc.innerHTML = `
+    <div class="hero-poster-wrap">
+      <img src="${m.poster}" alt="${m.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" loading="lazy" referrerpolicy="no-referrer" crossorigin="anonymous">
+      <div class="poster-fallback" style="display:none">🚀</div>
+    </div>
+    <div class="hero-info">
+      <div class="hero-label">🎬 本周推荐</div>
+      <div class="hero-title">${m.title}</div>
+      <div class="hero-sub">${m.en} · ${m.director} · ${m.year}</div>
+      <div class="hero-meta">
+        <div class="hero-rating">
+          <span class="score">${m.rating}</span>
+          <div><div class="stars">★★★★★</div><span class="count">${m.votes}人评价</span></div>
+        </div>
+      </div>
+      <div class="hero-genres">${m.genres.split(' / ').map(g=>`<span>${g}</span>`).join('')}</div>
+      <div class="hero-desc">${m.desc}</div>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="openDetail(${m.id})">查看详情</button>
+        <button class="btn-secondary">✚ 加入片单</button>
+      </div>
+    </div>`;
+}
+
+function getStars(r){ const s=r/2; let h=''; for(let i=1;i<=5;i++) h+= i<=Math.floor(s)?'★':(i-0.5<=s?'⭑':'☆'); return h; }
+
+function renderMovies(filter=null){
+  const list = filter||movies;
+  const grid = document.getElementById('movieGrid');
+  grid.innerHTML = list.map((m,i)=>(`
+    <div class="movie-card" onclick="openDetail(${m.id})">
+      <div class="rank">${i+1}</div>
+      <div class="movie-poster">
+        <img src="${m.poster}" alt="${m.title}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" referrerpolicy="no-referrer" crossorigin="anonymous">
+        <div class="fallback" style="display:none">🎞️</div>
+      </div>
+      <div class="movie-body">
+        <div class="title">${m.title}</div>
+        <div class="meta">
+          <span class="rating">★ ${m.rating}</span>
+          <span class="year">${m.year}</span>
+          <span class="genre-tag">${m.genres.split(' / ')[0]}</span>
+        </div>
+        <div class="brief">${m.desc.slice(0,60)}…</div>
+      </div>
+    </div>
+  `)).join('');
+}
+
+function renderFilters(){
+  const genres = ['全部',...[...new Set(movies.flatMap(m=>m.genres.split(' / ')))]];
+  document.getElementById('filters').innerHTML = genres.map((g,i)=>`<button class="filter-btn ${i===0?'active':''}" onclick="filterMovies('${g}')">${g}</button>`).join('');
+}
+
+function renderDiscussions(){
+  document.getElementById('discussionList').innerHTML = discussions.map(d=>`
+    <div class="featured-review" style="margin-bottom:16px;cursor:pointer" onclick="openDiscussion(${d.id})">
+      <div class="review-header">
+        <div class="avatar">${d.avatar}</div>
+        <div><div class="reviewer">${d.user}</div><div class="reviewer-sub">${d.time}</div></div>
+        <span style="margin-left:auto;padding:4px 12px;background:rgba(245,197,24,.15);color:var(--gold);border-radius:10px;font-size:11px;font-weight:600">${d.tag}</span>
+      </div>
+      <h3 style="font-size:17px;margin-bottom:10px">${d.title}</h3>
+      <div class="review-text" style="margin-bottom:8px">${d.excerpt}</div>
+      <div class="review-footer">💬 ${d.replies}回复 · 👍 ${d.likes}赞</div>
+    </div>
+  `).join('');
+}
+
+function renderFeaturedReview(){
+  const r = reviews[Math.floor(Math.random()*reviews.length)];
+  document.getElementById('featuredReview').innerHTML = `
+    <div class="review-header">
+      <div class="avatar">${r.avatar}</div>
+      <div><div class="reviewer">${r.user}</div><div class="reviewer-sub">${r.sub}</div></div>
+    </div>
+    <div class="review-text">${r.text}</div>
+    <div class="review-footer">👍 ${r.likes} · 💬 ${r.comments}条回复</div>`;
+}
+
+function renderSidebar(){
+  document.getElementById('topRank').innerHTML = movies.slice(0,10).map(m=>`<li onclick="openDetail(${m.id})"><span style="flex:1">${m.title}</span><span style="color:var(--gold);font-size:12px;font-weight:700">★${m.rating}</span></li>`).join('');
+  document.getElementById('sideDiscussions').innerHTML = discussions.slice(0,4).map(d=>`
+    <div class="disc-item" onclick="openDiscussion(${d.id})"><div class="disc-title">${d.title.slice(0,30)}…</div><div class="disc-meta"><span>💬 ${d.replies}</span><span>👍 ${d.likes}</span></div><span class="disc-tag">${d.tag}</span></div>
+  `).join('');
+}
+
+// ========= 交互 =========
+function filterMovies(g){ 
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderMovies(g==='全部'?null:movies.filter(m=>m.genres.includes(g)));
+}
+
+document.getElementById('searchInput').addEventListener('input',function(){
+  const q = this.value.trim().toLowerCase();
+  if(!q){renderMovies();return;}
+  renderMovies(movies.filter(m=>m.title.includes(q)||m.en.toLowerCase().includes(q)||m.director.includes(q)||m.genres.includes(q)||m.cast.includes(q)));
+});
+
+// 电影详情Modal
+const comments={};
+function openDetail(id){
+  const m = movies.find(x=>x.id===id); if(!m) return;
+  const cmts = comments[id]||[];
+  document.getElementById('modalInner').innerHTML = `
+    <div class="modal-grid">
+      <div class="modal-poster-wrap">
+        <img src="${m.poster}" alt="${m.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" loading="lazy" referrerpolicy="no-referrer" crossorigin="anonymous">
+        <div class="poster-fallback" style="display:none">🎞️</div>
+      </div>
+      <div class="modal-detail">
+        <h2>${m.title}</h2>
+        <div class="en-title">${m.en} · ${m.year}</div>
+        <div class="info-tags">${m.genres.split(' / ').map(g=>`<span>${g}</span>`).join('')}<span>${m.director}</span></div>
+        <div class="modal-rating">
+          <span class="big-score">${m.rating}</span>
+          <div class="rating-info"><strong>${getStars(m.rating)}</strong>${m.votes}人评价</div>
+        </div>
+        <p class="synopsis">${m.desc}</p>
+        <p style="font-size:13px;color:var(--text3)">🎭 主演：${m.cast}</p>
+      </div>
+    </div>
+    <div class="modal-comments">
+      <h3>💬 讨论区 (${cmts.length})</h3>
+      <div class="comment-input">
+        <input type="text" id="commentInput" placeholder="写下你的想法…">
+        <button onclick="addCmt(${id})">发布</button>
+      </div>
+      <div id="commentList">${cmts.map(c=>`<div class="comment-item"><div class="c-user">${c.user}</div><div class="c-text">${c.text}</div><div class="c-time">${c.time}</div></div>`).join('')}</div>
+    </div>`;
+  document.getElementById('modal').classList.add('active');
+}
+
+function addCmt(id){
+  const inp=document.getElementById('commentInput');const t=inp.value.trim();if(!t)return;
+  if(!comments[id])comments[id]=[];
+  comments[id].push({user:'游客影迷',text:t,time:'刚刚'});
+  openDetail(id);
+}
+
+function openDiscussion(id){
+  const d = discussions.find(x=>x.id===id);if(!d)return;
+  const cmts=comments[id]||[];
+  document.getElementById('modalInner').innerHTML=`
+    <div class="review-header" style="margin-bottom:20px">
+      <div class="avatar">${d.avatar}</div><div><div class="reviewer">${d.user}</div><div class="reviewer-sub">${d.time}</div></div>
+      <span style="margin-left:auto;padding:4px 12px;background:rgba(245,197,24,.15);color:var(--gold);border-radius:10px;font-size:11px;font-weight:600">${d.tag}</span></div>
+    <h2 style="margin-bottom:14px">${d.title}</h2>
+    <p style="font-size:15px;line-height:1.9;color:var(--text2);margin-bottom:20px">${d.excerpt}</p>
+    <div style="display:flex;gap:16px;font-size:13px;color:var(--text3);margin-bottom:24px">💬 ${d.replies}回复 · 👍 ${d.likes}赞</div>
+    <div class="modal-comments">
+      <h3>回复 (${cmts.length})</h3>
+      <div class="comment-input"><input type="text" id="commentInput" placeholder="写下你的回复…"><button onclick="addCmt(${id})">回复</button></div>
+      <div id="commentList">${cmts.map(c=>`<div class="comment-item"><div class="c-user">${c.user}</div><div class="c-text">${c.text}</div><div class="c-time">${c.time}</div></div>`).join('')}</div></div>`;
+  document.getElementById('modal').classList.add('active');
+}
+
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.getElementById('modalClose').addEventListener('click',closeModal);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+function closeModal(){document.getElementById('modal').classList.remove('active');}
+
+// 初始化
+heroBanner();
+renderFilters();
+renderMovies();
+renderDiscussions();
+renderFeaturedReview();
+renderSidebar();
+
+// Hero轮播
+let heroIdx=1;
+setInterval(()=>{
+  heroIdx = (heroIdx+1) % movies.length;
+  const m = movies[heroIdx];
+  const hc = document.getElementById('heroContent');
+  hc.style.opacity='0';
+  setTimeout(()=>{
+    hc.innerHTML = `\x3cdiv class="hero-poster-wrap"\x3e\x3cimg src="${m.poster}" alt="${m.title}" onerror="this.style.display='\\'\\'';this.nextElementSibling.style.display='\\'\\''" loading="lazy"\x3e\x3cdiv class="poster-fallback" style="display:none"\x3e🎞️\x3c/div\x3e\x3c/div\x3e\x3cdiv class="hero-info"\x3e\x3cdiv class="hero-label"\x3e🎬 本周推荐\x3c/div\x3e\x3cdiv class="hero-title"\x3e${m.title}\x3c/div\x3e\x3cdiv class="hero-sub"\x3e${m.en} · ${m.director} · ${m.year}\x3c/div\x3e\x3cdiv class="hero-meta"\x3e\x3cdiv class="hero-rating"\x3e\x3cspan class="score"\x3e${m.rating}\x3c/span\x3e\x3cdiv\x3e\x3cdiv class="stars"\x3e★★★★★\x3c/div\x3e\x3cspan class="count"\x3e${m.votes}人评价\x3c/span\x3e\x3c/div\x3e\x3c/div\x3e\x3c/div\x3e\x3cdiv class="hero-genres"\x3e${m.genres.split(' / ').map(g=>`\x3cspan\x3e${g}\x3c/span\x3e`).join('')}\x3c/div\x3e\x3cdiv class="hero-desc"\x3e${m.desc}\x3c/div\x3e\x3cdiv class="hero-actions"\x3e\x3cbutton class="btn-primary" onclick="openDetail(${m.id})"\x3e查看详情\x3c/button\x3e\x3cbutton class="btn-secondary"\x3e✚ 加入片单\x3c/button\x3e\x3c/div\x3e\x3c/div\x3e`;
+    hc.style.transition='opacity .4s'; hc.style.opacity='1';
+  },400);
+},8000);
+</script>
+</body>
+</html>
