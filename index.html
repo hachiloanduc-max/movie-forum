@@ -275,7 +275,7 @@ function heroBanner(){
   const hc = document.getElementById('heroContent');
   hc.innerHTML = `
     <div class="hero-poster-wrap">
-      <img src="${m.poster}" alt="${m.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" loading="lazy" referrerpolicy="no-referrer" crossorigin="anonymous">
+      <img src="${m.poster}" alt="${m.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" loading="lazy" referrerpolicy="no-referrer">
       <div class="poster-fallback" style="display:none">🚀</div>
     </div>
     <div class="hero-info">
@@ -306,7 +306,7 @@ function renderMovies(filter=null){
     <div class="movie-card" onclick="openDetail(${m.id})">
       <div class="rank">${i+1}</div>
       <div class="movie-poster">
-        <img src="${m.poster}" alt="${m.title}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" referrerpolicy="no-referrer" crossorigin="anonymous">
+        <img src="${m.poster}" alt="${m.title}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" referrerpolicy="no-referrer">
         <div class="fallback" style="display:none">🎞️</div>
       </div>
       <div class="movie-body">
@@ -381,7 +381,7 @@ function openDetail(id){
   document.getElementById('modalInner').innerHTML = `
     <div class="modal-grid">
       <div class="modal-poster-wrap">
-        <img src="${m.poster}" alt="${m.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" loading="lazy" referrerpolicy="no-referrer" crossorigin="anonymous">
+        <img src="${m.poster}" alt="${m.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" loading="lazy" referrerpolicy="no-referrer">
         <div class="poster-fallback" style="display:none">🎞️</div>
       </div>
       <div class="modal-detail">
